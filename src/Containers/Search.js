@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { List } from 'semantic-ui-react'
 import { InputAndSaveTextArea } from '../Components/Inputs'
+import { SearchResult } from '../Components/Search'
 import { doSearch } from '../Actions/Search'
 
 
@@ -44,18 +45,11 @@ class _SearchResults extends Component {
         const { searchResults } = this.props
 
         return (
-            <List>
+            <div>
                 {searchResults.map(({searchTerm, doc, termFreq}, index)=>{
-                    return (
-                        <List.Item key={index}>
-                            <List.Content>
-                                <List.Header>"{searchTerm}" Term Freq: {termFreq}</List.Header>
-                                <List.Description>Document #{doc.documentId}, which begins "{doc.identifier}"</List.Description>
-                            </List.Content>
-                        </List.Item>
-                    )
+                    return <SearchResult key={index} searchTerm={searchTerm} doc={doc} termFreq={termFreq} />                    
                 })}
-            </List>
+            </div>
         )
 
     }
@@ -65,8 +59,14 @@ const mapStateToProps = ({documents: {terms, documents}, search: { searchTerms }
     let searchResults = []
     if(searchTerms.length > 0){
         searchResults = searchTerms
-            .filter(term=>terms[term])
             .map(term => {
+                if(!terms[term]){
+                    return {
+                        searchTerm: term,
+                        doc: null,
+                        termFreq: 0
+                    }
+                }
                 return {
                     searchTerm: term,
                     doc: documents[terms[term].documentId],

@@ -1,4 +1,4 @@
-import { DOCUMENT_PARSED } from '../Actions/Documents'
+import { DOCUMENT_PARSED, ADD_DOCUMENT, ADD_DOCUMENT_FAILED, ADD_URL, ADD_URL_FAILED } from '../Actions/Documents'
 
 const initialState = {
     count: 0,
@@ -7,6 +7,14 @@ const initialState = {
     },
     documents: {
         /* dictionary of documentId->{documentId, identifier, wordCount} */
+    },
+    addDocumentStatus: {
+        loading: false,
+        error: null
+    },
+    addUrlStatus: {
+        loading: false,
+        error: null
     }
 }
 export default (state = initialState, action) => {
@@ -30,11 +38,51 @@ export default (state = initialState, action) => {
                     }
                 }
             }
-            return {
+            return Object.assign({}, state, {
                 count: state.count + 1,
                 documents,
-                terms: newTerms
-            }
+                terms: newTerms,
+                addUrlStatus: {
+                    loading: false,
+                    error: null
+                },
+                addDocumentStatus: {
+                    loading: false,
+                    error: null
+                }
+            })
+        case ADD_DOCUMENT_FAILED:
+            return Object.assign({}, state, {
+                addDocumentStatus: {
+                    loading: false,
+                    error: "Failed to add document."
+                }
+            })
+        case ADD_URL_FAILED:
+            return Object.assign({}, state, {
+                addUrlStatus: {
+                    loading: false,
+                    error: "Failed to fetch document from URL."
+                },
+                addDocumentStatus: {
+                    loading: false,
+                    error: "Failed to add document."
+                }
+            })
+        case ADD_DOCUMENT:
+            return Object.assign({}, state, {
+                addDocumentStatus: {
+                    loading: true,
+                    error: null
+                }
+            })
+        case ADD_URL:
+            return Object.assign({}, state, {
+                addDocumentStatus: {
+                    loading: true,
+                    error: null
+                }
+            })
         default:
             break;
     }

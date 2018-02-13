@@ -1,0 +1,45 @@
+.SearchResult {
+    width: 250px;
+    border: .5px solid #4AC9CB;
+    border-radius: 5px;
+    padding: 5px 15px;
+    margin-bottom: 10px;
+    box-shadow: 5px 5px 5px lightgray;
+}
+
+.SearchTerm {
+    font-size: 1.2em;
+    font-weight: 700;
+    width: 100%;
+    border-bottom: .5px solid #4AC9CB;
+    margin-bottom: 10px;
+}
+
+.Result {
+    display: flex;
+}
+
+.TermFreq {
+    flex: 1;
+}
+
+.Divider {
+    width: 15px;
+    opacity: .8;
+}
+
+.Document {
+    flex: 1;
+}
+
+.DocumentID {
+
+}
+
+.Identifier {
+    font-style: italic;
+}
+
+.NoResult {
+
+}

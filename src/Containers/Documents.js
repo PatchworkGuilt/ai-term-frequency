@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Menu } from 'semantic-ui-react'
+import { isWebUri } from 'valid-url'
 import { InputAndSaveText, InputAndSaveTextArea } from '../Components/Inputs'
 import { addDocument, addUrl } from '../Actions/Documents'
 
@@ -42,7 +43,7 @@ class AddDocumentMenu extends Component {
 
 
     render(){
-        const { numDocuments } = this.props
+        const { numDocuments, addUrlStatus, addDocumentStatus } = this.props
         const { inputMethod, documentContent, urlContent } = this.state
 
         return (
@@ -59,6 +60,9 @@ class AddDocumentMenu extends Component {
                       active={inputMethod === URL_DOWNLOAD}
                       onClick={this.onChangeInputMethod}
                     />
+                    <Menu.Item position='right'>
+                        <span><strong style={{color: '#4AC9CB'}}>{numDocuments}</strong> Document{numDocuments === 1? '' : 's'}</span>
+                    </Menu.Item>
                 </Menu>
                 {inputMethod === COPY_PASTE &&
                     <InputAndSaveTextArea
@@ -66,6 +70,9 @@ class AddDocumentMenu extends Component {
                         onChange={this.onDocumentUpdated}
                         value={documentContent}
                         onSave={this.onAddDocument}
+                        disabled={!documentContent}
+                        errorMessage={addDocumentStatus.error}
+                        loading={addDocumentStatus.loading}
                     />
                 }
                 {inputMethod === URL_DOWNLOAD &&
@@ -74,9 +81,11 @@ class AddDocumentMenu extends Component {
                         onChange={this.onUrlUpdated}
                         value={urlContent}
                         onSave={this.onAddUrl}
+                        disabled={!isWebUri(urlContent)}
+                        errorMessage={addUrlStatus.error || (urlContent && !isWebUri(urlContent) ? 'Not a valid URL' : null)}
+                        loading={addUrlStatus.loading}                   
                     />
                 }
-                <h4>You&apos;ve added <strong>{numDocuments}</strong> document{numDocuments === 1? '' : 's'}</h4>
             </div>
         )
     }
@@ -84,7 +93,9 @@ class AddDocumentMenu extends Component {
 
 const mapStateToProps = ({documents}) => {
     return {
-        numDocuments: documents.count
+        numDocuments: documents.count,
+        addUrlStatus: documents.addUrlStatus,
+        addDocumentStatus: documents.addDocumentStatus
     }
 }
 export default connect(mapStateToProps, { addDocument, addUrl })(AddDocumentMenu)
